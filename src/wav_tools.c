@@ -30,17 +30,17 @@ void swap_bytes(void *data_vp, size_t length)
 /*
  * Get RIFF chunk from file. RIFF chunk must be free'd with freeRIFFChunk()
  */
-RIFFChunk *getRIFFChunk(FILE *file)
+riff_chunk *get_riff_chunk(FILE *file)
 {
-        RIFFChunk *rc = malloc(sizeof(*rc));
+        riff_chunk *rc = malloc(sizeof(riff_chunk));
 
-        if(fread(rc->sig, 1, 4, file) != 4) {
+        if(fread((void *)rc->sig, 1, 4, file) != 4) {
                 fprintf(stderr, "Couldn't read RIFF signature\n");
                 free(rc);
                 return NULL;
         }
 
-        if(fread(rc->size, 4, 1, file) != 1) {
+        if(fread(&(rc->size), 4, 1, file) != 1) {
                 fprintf(stderr, "Couldn't read RIFF chunk size\n");
                 free(rc);
                 return NULL;
@@ -48,7 +48,7 @@ RIFFChunk *getRIFFChunk(FILE *file)
 
         rc->data = malloc(rc->size);
 
-        if(fread(rc->data, 1, rc->size, file) != rc->size) {
+        if(fread((void *)rc->data, 1, rc->size, file) != rc->size) {
                 fprintf(stderr, "Couldn't read RIFF chunk data\n");
                 free(rc);
                 return NULL;
@@ -60,7 +60,7 @@ RIFFChunk *getRIFFChunk(FILE *file)
 /*
  * Frees RIFFChunk memory
  */
-void freeRIFFChunk(RIFFChunk *rc)
+void free_riff_chunk(riff_chunk *rc)
 {
         free(rc->data);
         free(rc);
@@ -70,7 +70,7 @@ void freeRIFFChunk(RIFFChunk *rc)
  * png_print_chunk_data
  * Function to print length and type of a chunk
  */
-void printRIFFChunk(RIFFChunk *rc)
+void print_riff_chunk(riff_chunk *rc)
 {
         char *s = rc->sig;
         printf("Chunk signature: %c%c%c%c\n", s[0], s[1], s[2], s[3]);

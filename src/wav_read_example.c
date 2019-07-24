@@ -5,16 +5,11 @@
 
 int main(int argc, char *argv[])
 {
-        FILE *audioFile = fopen(argv[1], "rb");
+        FILE *audio_file = fopen(argv[1], "rb");
 
-        RIFFChunk *riff = getRIFFChunk(audioFile);
+        audio_samples samples = get_samples(audio_file);
+        printf("Number of samples: %d\n", samples.length);
 
-        printRIFFChunk(riff);
-
-        freeRIFFChunk(riff);
-
-        //WAVAudioData *testData = getWavAudio(riff);
-
-        fclose(audioFile);
+        fclose(audio_file);
         return 0;
 }
